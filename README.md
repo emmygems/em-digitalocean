@@ -58,7 +58,19 @@ droplet = api.droplets.show(droplets[:droplets].first[:id]).sync
 * `api.droplets.upgrade(id).sync`
 * `api.droplets.retrive_action(id, action).sync`
 
-## Raise
+## Console
+
+irb
+> require 'rubygems'
+ => false
+> require 'emmy'
+ => true
+> require 'digitalocean'
+ => true
+> Emmy.run_block { p DigitalOcean::API.new(token: ENV['TOKEN']).droplets.all.sync }
+{:droplets=>[...], :links=>{}, :meta=>{:total=>1}}
+
+## Rails
 
 config/initializers/digitalocean.rb
 ```ruby
@@ -66,7 +78,12 @@ require 'digitalocean'
 Digitalocean.api = Digitalocean::API.new(token: 'TOKEN')
 ```
 
-Request:
+config/application.rb
+```ruby
+config.middleware.use Fibre::Rack::FiberPool
+```
+
+API call:
 
 ```ruby
 actions = Digitalocean.api.actions.sync
